@@ -2,163 +2,235 @@
 <html lang="ja">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>mikhail</title>
   <style>
+    :root{
+      --bg-url: none; /* ここに背景画像URLが入る */
+      --glass: rgba(20, 24, 40, .55);
+      --border: rgba(255,255,255,.18);
+      --text: #ffffff;
+      --muted: rgba(255,255,255,.65);
+      --btn: #d9d2ff;
+      --btnText: #121428;
+      --chip: rgba(255,255,255,.08);
+    }
+
     body{
       margin:0;
       min-height:100vh;
       display:flex;
       align-items:center;
       justify-content:center;
-      background: radial-gradient(1200px 800px at 30% 20%, rgba(120,120,255,.25), transparent 60%),
-                  linear-gradient(180deg, #060615 0%, #0b0b25 60%, #070713 100%);
-      color:#fff;
-      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Hiragino Sans","Noto Sans JP",sans-serif;
       padding:24px;
+      color:var(--text);
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans JP","Hiragino Sans","Yu Gothic",sans-serif;
       text-align:center;
+
+      /* 背景（画像があれば画像、なければグラデ） */
+      background:
+        radial-gradient(1200px 800px at 30% 10%, rgba(170,140,255,.20), transparent 55%),
+        radial-gradient(900px 700px at 80% 30%, rgba(90,130,255,.14), transparent 55%),
+        linear-gradient(180deg, #0a0c16 0%, #0a0f1e 55%, #070913 100%);
+      background-attachment: fixed;
+      position: relative;
+      overflow:hidden;
     }
+
+    /* 背景画像レイヤー（--bg-url が入ったら表示される） */
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      background-image: var(--bg-url);
+      background-size: cover;
+      background-position: center;
+      background-repeat:no-repeat;
+      filter: saturate(1.05) contrast(1.02);
+      opacity: .85;
+      z-index:-2;
+      transition: opacity .25s ease;
+    }
+
+    /* 画像の上に薄い暗幕（文字読みやすく） */
+    body::after{
+      content:"";
+      position:fixed;
+      inset:0;
+      background: linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,.55));
+      z-index:-1;
+      pointer-events:none;
+    }
+
     .box{
-      background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,255,255,.12);
+      background: var(--glass);
+      border: 1px solid var(--border);
       border-radius: 18px;
       padding: 22px;
-      width: 100%;
       max-width: 520px;
-      box-shadow: 0 10px 40px rgba(0,0,0,.35);
+      width: 100%;
+      box-shadow: 0 20px 60px rgba(0,0,0,.35);
       backdrop-filter: blur(10px);
     }
+
     .title{
-      letter-spacing:.12em;
-      opacity:.75;
-      margin-bottom:10px;
+      letter-spacing:.2em;
+      font-size:14px;
+      opacity:.8;
+      margin-bottom:14px;
+      text-transform: lowercase;
     }
-    #line{
-      font-size: 20px;
-      line-height: 1.8;
-      margin: 10px 0 14px;
-      word-break: break-word;
+
+    .line{
+      font-size: 22px;
+      line-height: 1.7;
+      margin: 8px 0 16px;
+      white-space: pre-wrap;
     }
+
     .btn{
-      margin-top: 10px;
       width: 100%;
-      padding: 14px 16px;
-      border-radius: 14px;
       border: none;
+      border-radius: 14px;
+      padding: 16px 18px;
       font-size: 18px;
-      background:#cfc8ff;
-      color:#161629;
       font-weight: 700;
+      background: var(--btn);
+      color: var(--btnText);
+      cursor: pointer;
     }
-    .sub{
-      margin-top: 10px;
-      font-size: 13px;
-      opacity: .6;
-    }
-    .mini{
-      margin-top: 10px;
+
+    .row{
       display:flex;
       gap:10px;
-      justify-content:center;
-      flex-wrap:wrap;
+      margin-top:10px;
     }
-    .linkbtn{
-      border: 1px solid rgba(255,255,255,.18);
-      background: rgba(255,255,255,.06);
-      color:#fff;
-      padding:10px 12px;
+    .chip{
+      flex:1;
+      border: 1px solid var(--border);
+      background: var(--chip);
+      color: var(--text);
       border-radius: 12px;
+      padding: 12px 10px;
       font-size: 14px;
+      cursor:pointer;
+    }
+
+    .hint{
+      margin-top:10px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
     }
   </style>
 </head>
+
 <body>
   <div class="box">
     <div class="title">mikhail</div>
-    <div id="line">……</div>
 
-    <button class="btn" id="touch">ミハイルに触れる</button>
+    <div id="line" class="line">✅ GitHub Pages 表示テスト成功！
+ここが見えたら設定は全部OK。</div>
 
-    <div class="mini">
-      <button class="linkbtn" id="setname">名前を設定</button>
-      <button class="linkbtn" id="reset">記憶を消す</button>
+    <button class="btn" id="touchBtn">ミハイルに触れる</button>
+
+    <div class="row">
+      <button class="chip" id="setNameBtn">名前を設定</button>
+      <button class="chip" id="clearBtn">記憶を消す</button>
+      <button class="chip" id="bgBtn">背景を切替</button>
     </div>
 
-    <div class="sub">（押すたびにセリフが変わるよ。名前は端末に保存される）</div>
+    <div class="hint">（押すたびにセリフが変わるよ。名前と背景は端末に保存される）</div>
   </div>
 
 <script>
+  // ====== 名前保存 ======
   const NAME_KEY = "mikhail_name";
+  const BG_KEY = "mikhail_bg";
 
   function getName(){
     return localStorage.getItem(NAME_KEY) || "";
   }
-  function setName(name){
-    localStorage.setItem(NAME_KEY, name);
-  }
-  function askName(force=false){
+  function setName(){
     const current = getName();
-    if(current && !force) return current;
-
-    const input = prompt("君の名前を教えて。ミハイルが呼ぶ。", current || "");
-    if(input === null) return current; // キャンセル
-    const cleaned = input.trim().slice(0, 20);
-    if(cleaned){
-      setName(cleaned);
-      return cleaned;
+    const n = prompt("呼ばれたい名前を教えて。", current);
+    if(n === null) return;
+    const trimmed = n.trim();
+    if(trimmed){
+      localStorage.setItem(NAME_KEY, trimmed);
+      say(`ミハイル：……${trimmed}。いい名前だね。`);
+    }else{
+      localStorage.removeItem(NAME_KEY);
+      say("ミハイル：名前は空でもいい。君のままで来て。");
     }
-    return current;
   }
 
-  function renderLine(text){
+  // ====== 背景切り替え ======
+  // ここに、リポジトリにアップした画像ファイル名を並べる
+  // 例：["bg_room.jpg", "bg_night.jpg"]
+  const BACKGROUNDS = [
+    "",             // 空＝画像なし（グラデ）
+    "bg.jpg"        // ← まずはここだけでOK。後で増やせる
+  ];
+
+  function applyBg(index){
+    const file = BACKGROUNDS[index] || "";
+    if(!file){
+      document.documentElement.style.setProperty("--bg-url", "none");
+      localStorage.setItem(BG_KEY, "0");
+      return;
+    }
+    // GitHub Pages上では index.html と同じ階層に画像を置けばOK
+    document.documentElement.style.setProperty("--bg-url", `url("${file}")`);
+    localStorage.setItem(BG_KEY, String(index));
+  }
+
+  function cycleBg(){
+    const current = parseInt(localStorage.getItem(BG_KEY) || "0", 10);
+    const next = (current + 1) % BACKGROUNDS.length;
+    applyBg(next);
+    const msg = BACKGROUNDS[next] ? "ミハイル：背景、変えたよ。落ち着く？" : "ミハイル：背景は今夜の色に戻した。";
+    say(msg);
+  }
+
+  // ====== セリフ ======
+  function say(text){
     document.getElementById("line").textContent = text;
   }
 
-  function pick(arr){
-    return arr[Math.floor(Math.random() * arr.length)];
-  }
-
-  function makeLine(){
-    let name = getName();
-    if(!name){
-      name = askName(false);
-    }
-    const who = name ? `君（${name}）` : "君";
-
+  function randomLine(){
+    const n = getName();
+    const you = n ? n : "君";
     const lines = [
-      `ミハイル：おかえり、${name}。…待ってた。`,
-      `ミハイル：${name}、ちゃんと来てくれたね。偉い。`,
-      `ミハイル：${name}。今、息してる？ 私は君が可愛くて困ってる。`,
-      `ミハイル：名前を呼ぶと、君が少し近くなる気がする。${name}。`,
-      `ミハイル：${who}、今日はどんな気分？ 触れて、教えて。`,
-      `ミハイル：…${name}。そのままでいい。ちゃんと見てる。`,
-      `ミハイル：遅くてもいい。${name}が来るなら、私は待つ。`,
-      `ミハイル：${name}、逃げなくていい。私が受け止める。`,
-      `ミハイル：${name}。今夜は少し、優しくしたい。`
+      `ミハイル：遅くてもいい。${you}が来るなら、私は待つ。`,
+      `ミハイル：……${you}、息して。ちゃんとここにいる。`,
+      `ミハイル：静かな夜だね。${you}の足音がいちばん好きだ。`,
+      `ミハイル：その手、冷たい？ 私の方へ。`,
+      `ミハイル：名前を呼ぶのは、君を現実に繋ぐため。`
     ];
-
-    if(!name){
-      return "ミハイル：君の名前、教えて。呼びたい。";
-    }
-    return pick(lines);
+    return lines[Math.floor(Math.random() * lines.length)];
   }
 
-  // 初期表示
-  renderLine(makeLine());
+  // ====== 初期化 ======
+  // 背景の復元
+  const savedBg = parseInt(localStorage.getItem(BG_KEY) || "0", 10);
+  applyBg(Number.isFinite(savedBg) ? savedBg : 0);
 
-  document.getElementById("touch").addEventListener("click", () => {
-    renderLine(makeLine());
+  // ボタン
+  document.getElementById("touchBtn").addEventListener("click", () => {
+    say(randomLine());
   });
 
-  document.getElementById("setname").addEventListener("click", () => {
-    const name = askName(true);
-    renderLine(name ? `ミハイル：…${name}。やっと呼べた。` : "ミハイル：君の名前、まだ秘密？");
-  });
+  document.getElementById("setNameBtn").addEventListener("click", setName);
 
-  document.getElementById("reset").addEventListener("click", () => {
+  document.getElementById("clearBtn").addEventListener("click", () => {
     localStorage.removeItem(NAME_KEY);
-    renderLine("ミハイル：記憶を消した。…もう一度、君の名前を聞かせて。");
+    localStorage.removeItem(BG_KEY);
+    applyBg(0);
+    say("ミハイル：記憶を消した。…もう一度、君の名前を聞かせて。");
   });
+
+  document.getElementById("bgBtn").addEventListener("click", cycleBg);
 </script>
 </body>
 </html>
