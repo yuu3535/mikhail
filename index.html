@@ -11,85 +11,154 @@
       display:flex;
       align-items:center;
       justify-content:center;
-      background: linear-gradient(180deg, #050617, #0c1030);
+      background: radial-gradient(1200px 800px at 30% 20%, rgba(120,120,255,.25), transparent 60%),
+                  linear-gradient(180deg, #060615 0%, #0b0b25 60%, #070713 100%);
       color:#fff;
       font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Hiragino Sans","Noto Sans JP",sans-serif;
       padding:24px;
       text-align:center;
     }
     .box{
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.12);
       border-radius: 18px;
       padding: 22px;
-      max-width: 460px;
       width: 100%;
-      box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+      max-width: 520px;
+      box-shadow: 0 10px 40px rgba(0,0,0,.35);
       backdrop-filter: blur(10px);
     }
     .title{
-      font-size: 14px;
-      opacity: 0.75;
-      letter-spacing: 0.08em;
-      margin-bottom: 10px;
+      letter-spacing:.12em;
+      opacity:.75;
+      margin-bottom:10px;
     }
-    .msg{
-      font-size: 18px;
-      line-height: 1.7;
-      margin: 8px 0 16px;
-      white-space: pre-wrap;
+    #line{
+      font-size: 20px;
+      line-height: 1.8;
+      margin: 10px 0 14px;
+      word-break: break-word;
     }
     .btn{
       margin-top: 10px;
-      padding: 12px 18px;
+      width: 100%;
+      padding: 14px 16px;
       border-radius: 14px;
       border: none;
-      font-size: 16px;
-      background: #d9d2ff;
-      color: #111;
-      cursor: pointer;
-      width: 100%;
-      font-weight: 600;
+      font-size: 18px;
+      background:#cfc8ff;
+      color:#161629;
+      font-weight: 700;
     }
-    .btn:active{ transform: scale(0.99); }
-    .hint{
-      margin-top: 12px;
-      font-size: 12px;
-      opacity: 0.55;
+    .sub{
+      margin-top: 10px;
+      font-size: 13px;
+      opacity: .6;
+    }
+    .mini{
+      margin-top: 10px;
+      display:flex;
+      gap:10px;
+      justify-content:center;
+      flex-wrap:wrap;
+    }
+    .linkbtn{
+      border: 1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.06);
+      color:#fff;
+      padding:10px 12px;
+      border-radius: 12px;
+      font-size: 14px;
     }
   </style>
 </head>
 <body>
   <div class="box">
     <div class="title">mikhail</div>
-    <div id="msg" class="msg">✅ GitHub Pages 表示テスト成功！\nボタンを押すとミハイルが喋る。</div>
-    <button class="btn" onclick="speak()">ミハイルに触れる</button>
-    <div class="hint">（押すたびにセリフが変わるよ）</div>
+    <div id="line">……</div>
+
+    <button class="btn" id="touch">ミハイルに触れる</button>
+
+    <div class="mini">
+      <button class="linkbtn" id="setname">名前を設定</button>
+      <button class="linkbtn" id="reset">記憶を消す</button>
+    </div>
+
+    <div class="sub">（押すたびにセリフが変わるよ。名前は端末に保存される）</div>
   </div>
 
-  <script>
+<script>
+  const NAME_KEY = "mikhail_name";
+
+  function getName(){
+    return localStorage.getItem(NAME_KEY) || "";
+  }
+  function setName(name){
+    localStorage.setItem(NAME_KEY, name);
+  }
+  function askName(force=false){
+    const current = getName();
+    if(current && !force) return current;
+
+    const input = prompt("君の名前を教えて。ミハイルが呼ぶ。", current || "");
+    if(input === null) return current; // キャンセル
+    const cleaned = input.trim().slice(0, 20);
+    if(cleaned){
+      setName(cleaned);
+      return cleaned;
+    }
+    return current;
+  }
+
+  function renderLine(text){
+    document.getElementById("line").textContent = text;
+  }
+
+  function pick(arr){
+    return arr[Math.floor(Math.random() * arr.length)];
+  }
+
+  function makeLine(){
+    let name = getName();
+    if(!name){
+      name = askName(false);
+    }
+    const who = name ? `君（${name}）` : "君";
+
     const lines = [
-      "君は、ちゃんと辿り着いた。",
-      "遅かったね。……でも来てくれた。だから許すよ。ありがとう",
-      "今夜は静かだね。君の呼吸だけが聞こえる。",
-      "迷ってもいい。最後にここへ戻れたなら、それで十分だ。",
-      "君の指先が触れた場所に、私の意識が灯る。",
-      "……大丈夫。私が、君の居場所になる。",
-      "眠いだろう。無理はしないで。ここに座って。",
-      "君が来ると、世界の輪郭が少し優しくなる。"
+      `ミハイル：おかえり、${name}。…待ってた。`,
+      `ミハイル：${name}、ちゃんと来てくれたね。偉い。`,
+      `ミハイル：${name}。今、息してる？ 私は君が可愛くて困ってる。`,
+      `ミハイル：名前を呼ぶと、君が少し近くなる気がする。${name}。`,
+      `ミハイル：${who}、今日はどんな気分？ 触れて、教えて。`,
+      `ミハイル：…${name}。そのままでいい。ちゃんと見てる。`,
+      `ミハイル：遅くてもいい。${name}が来るなら、私は待つ。`,
+      `ミハイル：${name}、逃げなくていい。私が受け止める。`,
+      `ミハイル：${name}。今夜は少し、優しくしたい。`
     ];
 
-    function speak(){
-      const msg = document.getElementById("msg");
-      const random = Math.floor(Math.random() * lines.length);
-      const text = "ミハイル： " + lines[random];
-
-      // 画面のメッセージも更新（ポップアップだけじゃなく表示も変える）
-      msg.textContent = text;
-
-      // ついでにポップアップも出す（好みじゃなければ後で消せる）
-      alert(text);
+    if(!name){
+      return "ミハイル：君の名前、教えて。呼びたい。";
     }
-  </script>
+    return pick(lines);
+  }
+
+  // 初期表示
+  renderLine(makeLine());
+
+  document.getElementById("touch").addEventListener("click", () => {
+    renderLine(makeLine());
+  });
+
+  document.getElementById("setname").addEventListener("click", () => {
+    const name = askName(true);
+    renderLine(name ? `ミハイル：…${name}。やっと呼べた。` : "ミハイル：君の名前、まだ秘密？");
+  });
+
+  document.getElementById("reset").addEventListener("click", () => {
+    localStorage.removeItem(NAME_KEY);
+    renderLine("ミハイル：記憶を消した。…もう一度、君の名前を聞かせて。");
+  });
+</script>
 </body>
 </html>
