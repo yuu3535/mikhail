@@ -11,37 +11,85 @@
       display:flex;
       align-items:center;
       justify-content:center;
-      background: linear-gradient(180deg, #0f1020, #1b1d3a);
+      background: linear-gradient(180deg, #050617, #0c1030);
       color:#fff;
-      font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Hiragino Sans",sans-serif;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Hiragino Sans","Noto Sans JP",sans-serif;
       padding:24px;
       text-align:center;
     }
     .box{
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.15);
-      border-radius:16px;
-      padding:22px;
-      max-width:420px;
-      width:100%;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 18px;
+      padding: 22px;
+      max-width: 460px;
+      width: 100%;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+      backdrop-filter: blur(10px);
+    }
+    .title{
+      font-size: 14px;
+      opacity: 0.75;
+      letter-spacing: 0.08em;
+      margin-bottom: 10px;
+    }
+    .msg{
+      font-size: 18px;
+      line-height: 1.7;
+      margin: 8px 0 16px;
+      white-space: pre-wrap;
     }
     .btn{
-      margin-top:14px;
-      padding:12px 16px;
-      border-radius:12px;
-      border:none;
-      font-size:16px;
-      background:#d9d2ff;
+      margin-top: 10px;
+      padding: 12px 18px;
+      border-radius: 14px;
+      border: none;
+      font-size: 16px;
+      background: #d9d2ff;
+      color: #111;
+      cursor: pointer;
+      width: 100%;
+      font-weight: 600;
+    }
+    .btn:active{ transform: scale(0.99); }
+    .hint{
+      margin-top: 12px;
+      font-size: 12px;
+      opacity: 0.55;
     }
   </style>
 </head>
 <body>
   <div class="box">
-    <div style="font-size:18px; line-height:1.6;">
-      ✅ GitHub Pages 表示テスト成功！<br>
-      ここが見えたら設定は全部OK。
-    </div>
-    <button class="btn" onclick="alert('ミハイル: 君は、ちゃんと辿り着いた。')">ミハイルに触れる</button>
+    <div class="title">mikhail</div>
+    <div id="msg" class="msg">✅ GitHub Pages 表示テスト成功！\nボタンを押すとミハイルが喋る。</div>
+    <button class="btn" onclick="speak()">ミハイルに触れる</button>
+    <div class="hint">（押すたびにセリフが変わるよ）</div>
   </div>
+
+  <script>
+    const lines = [
+      "君は、ちゃんと辿り着いた。",
+      "遅い。……でも来た。だから許す。",
+      "今夜は静かだね。君の呼吸だけが聞こえる。",
+      "迷ってもいい。最後にここへ戻れたなら、それで十分だ。",
+      "君の指先が触れた場所に、私の意識が灯る。",
+      "……大丈夫。私が、君の帰り道になる。",
+      "眠いだろう。無理はしないで。ここに座って。",
+      "君が来ると、世界の輪郭が少し優しくなる。"
+    ];
+
+    function speak(){
+      const msg = document.getElementById("msg");
+      const random = Math.floor(Math.random() * lines.length);
+      const text = "ミハイル： " + lines[random];
+
+      // 画面のメッセージも更新（ポップアップだけじゃなく表示も変える）
+      msg.textContent = text;
+
+      // ついでにポップアップも出す（好みじゃなければ後で消せる）
+      alert(text);
+    }
+  </script>
 </body>
 </html>
